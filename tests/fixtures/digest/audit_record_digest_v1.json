@@ -1,0 +1,52 @@
+{
+  "fixture_format": "hmx-digest-vectors-v1",
+  "algorithm": "audit_record_digest_v1",
+  "vectors": [
+    {
+      "name": "verified_base",
+      "input": {
+        "audit_id": "audit-a",
+        "event_type": "protected_section_verified",
+        "event_time": "2026-07-10T12:00:00Z",
+        "sections_verified": ["worldview"],
+        "source": {"export_id": "export-a", "origin_instance": "hexis-a"},
+        "local_digest_v1": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "imported_digest_v1": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "expected_digest": "a57f1a9333139322e94f71718994b296d88695c5fe132becf9a02c3292358e03"
+    },
+    {
+      "name": "verified_transport_fields",
+      "input": {
+        "local_record_id": "row-b",
+        "imported_at": "2026-07-10T13:00:00Z",
+        "audit_id": "audit-b",
+        "event_type": "protected_section_verified",
+        "event_time": "2026-07-10T12:00:00Z",
+        "sections_verified": ["worldview"],
+        "source": {"origin_instance": "hexis-a", "export_id": "export-a"},
+        "local_digest_v1": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "imported_digest_v1": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "metadata": {"unrecognized_hmx_fields": {"future_field": true}}
+      },
+      "expected_digest": "a57f1a9333139322e94f71718994b296d88695c5fe132becf9a02c3292358e03"
+    },
+    {
+      "name": "verified_semantic_change",
+      "input": {
+        "audit_id": "audit-a",
+        "event_type": "protected_section_verified",
+        "event_time": "2026-07-10T12:00:00Z",
+        "sections_verified": ["identity"],
+        "source": {"export_id": "export-a", "origin_instance": "hexis-a"},
+        "local_digest_v1": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "imported_digest_v1": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "expected_digest": "500ca4353b05c68fd3fef58aaf67fac9948808fcf9bf2aeb25572bd90a5ad28d"
+    }
+  ],
+  "relations": [
+    {"kind": "equal", "left": "verified_base", "right": "verified_transport_fields", "covers": "audit_transport_fields"},
+    {"kind": "different", "left": "verified_base", "right": "verified_semantic_change", "covers": "audit_semantic_change"}
+  ]
+}

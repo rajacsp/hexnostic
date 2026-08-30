@@ -1,0 +1,11 @@
+{
+  "id": "fathom",
+  "name": "Fathom",
+  "version": "1.0.0",
+  "description": "Fathom meeting transcripts (list and ingest into memory)",
+  "config_schema": {},
+  "tools": [
+    "fathom_transcripts",
+    "fathom_ingest"
+  ]
+}

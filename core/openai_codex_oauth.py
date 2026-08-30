@@ -1,0 +1,27 @@
+"""Backward-compatibility shim — re-exports from core.auth.openai_codex."""
+
+from core.auth.openai_codex import (  # noqa: F401
+    OPENAI_AUTH_JWT_CLAIM_PATH,
+    OPENAI_CODEX_AUTHORIZE_URL,
+    OPENAI_CODEX_CLIENT_ID,
+    OPENAI_CODEX_OAUTH_CONFIG_KEY,
+    OPENAI_CODEX_ORIGINATOR,
+    OPENAI_CODEX_REDIRECT_URI,
+    OPENAI_CODEX_SCOPE,
+    OPENAI_CODEX_TOKEN_URL,
+    OpenAICodexCredentials,
+    build_authorize_url,
+    create_state,
+    credentials_from_value,
+    credentials_to_dict,
+    decode_jwt_payload,
+    delete_openai_codex_credentials,
+    ensure_fresh_openai_codex_credentials,
+    exchange_authorization_code,
+    extract_account_id,
+    generate_pkce,
+    load_openai_codex_credentials,
+    parse_authorization_input,
+    refresh_openai_codex_token,
+    save_openai_codex_credentials,
+)

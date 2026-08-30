@@ -1,0 +1,111 @@
+name: publish
+
+# Build and push the runtime images consumed by ops/docker-compose.runtime.yml
+# (and pulled as a cache by ci.yml). Runs on every push to main, on version
+# tags, and on demand.
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: hexis-brain
+            dockerfile: ops/Dockerfile.db
+          - image: hexis-worker
+            dockerfile: ops/Dockerfile.worker
+          - image: hexis-channels
+            dockerfile: ops/Dockerfile.channels
+          - image: hexis-ui
+            dockerfile: ops/Dockerfile.ui
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tag model (industry convention):
+      #   push to main  -> `edge` (moving dev tag) + immutable `sha-*`
+      #   tag vX.Y.Z    -> `X.Y.Z`, `X.Y`, `X` + move `latest`
+      # `latest` therefore always means "newest release", never "tip of main".
+      # Packaged installs pin their exact version via HEXIS_IMAGE_TAG (see
+      # ops/docker-compose.runtime.yml); `latest` is only the fallback.
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/quixiai/${{ matrix.image }}
+          tags: |
+            type=raw,value=edge,enable={{is_default_branch}}
+            type=sha,prefix=sha-
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+
+  # A release tag publishes the pip package from the SAME commit as the images,
+  # so `pip install hexis==X.Y.Z` always has matching `X.Y.Z` images to pull.
+  # One-time setup: add a "trusted publisher" for this repo/workflow on PyPI
+  # (project settings -> Publishing); no API token needed after that.
+  pypi:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Refuse to publish if the tag and pyproject.toml disagree — a mismatch
+      # would ship images tagged X.Y.Z alongside a wheel claiming another
+      # version, breaking the version-pinned image pull.
+      - name: Check tag matches pyproject version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          ver="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
+          if [ "$tag" != "$ver" ]; then
+            echo "::error::Tag v$tag does not match pyproject version $ver — bump pyproject.toml before tagging."
+            exit 1
+          fi
+
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+
+      - uses: pypa/gh-action-pypi-publish@release/v1

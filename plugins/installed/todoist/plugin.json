@@ -1,0 +1,12 @@
+{
+  "id": "todoist",
+  "name": "Todoist",
+  "version": "1.0.0",
+  "description": "Todoist task management (create, list, complete)",
+  "config_schema": {},
+  "tools": [
+    "todoist_create_task",
+    "todoist_list_tasks",
+    "todoist_complete_task"
+  ]
+}

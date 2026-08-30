@@ -1,0 +1,144 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hexis"
+version = "1.0.13"
+description = "Persistent memory and identity for AI — a Postgres-native cognitive architecture."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+  { name = "Eric Hartford", email = "ehartford@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "fastapi>=0.104.0",
+  "python-multipart>=0.0.9",
+  "uvicorn>=0.24.0",
+  "websockets>=14.0",
+  "pydantic>=2.4.2",
+  "jsonschema>=4.18.0",
+  "cryptography>=41.0.0",
+  "pywebpush>=2.0.0",
+  "asyncpg>=0.29.0",
+  "psycopg2-binary>=2.9.9",
+  "requests>=2.31.0",
+  "python-dotenv>=1.0.0",
+  "beautifulsoup4>=4.12.0",
+  "feedparser>=6.0.0",
+  "pdfplumber>=0.11.0",
+  "trafilatura>=1.8.0",
+  "youtube-transcript-api>=0.6.0",
+  "numpy>=1.24.0",
+  "tiktoken>=0.5.1",
+  "openai>=1.3.0",
+  "google-genai>=1.0.0",
+  "pgvector>=0.2.0",
+  "mcp",
+  "rich>=13.0.0",
+  "questionary>=2.0.0",
+  "textual>=1.0.0",
+  "pytest>=7.4.3",
+  "pytest-asyncio>=0.21.1",
+  "pytest-mock>=3.11.1",
+  "pytest-cov>=4.1.0",
+  "httpx>=0.25.0",
+  "tenacity>=8.2.3",
+  "selenium>=4.19.0",
+  "black>=23.11.0",
+  "isort>=5.12.0",
+  "mypy>=1.7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/QuixiAI/Hexis"
+Repository = "https://github.com/QuixiAI/Hexis"
+Issues = "https://github.com/QuixiAI/Hexis/issues"
+
+[project.scripts]
+hexis = "apps.hexis_cli:main"
+hexis-worker = "apps.worker:main"
+hexis-mcp = "apps.hexis_mcp_server:main"
+hexis-api = "apps.hexis_api:main"
+hexis-channels = "services.channel_worker:main"
+hexis-voice = "apps.voice_sidecar:main"
+hexis-memory-benchmark = "evals.memory_benchmark.run:main"
+
+[project.optional-dependencies]
+anthropic = [
+  "anthropic>=0.18.0",
+]
+channels = [
+  "discord.py>=2.3.0",
+  "python-telegram-bot>=21.0",
+  "slack-bolt>=1.18.0",
+  "slack-sdk>=3.27.0",
+  "matrix-nio>=0.24.0",
+]
+readers = [
+  "python-docx>=0.8.11",
+  "python-pptx>=0.6.21",
+  "openpyxl>=3.1.0",
+  "striprtf>=0.0.26",
+  "ebooklib>=0.18.0",
+  "beautifulsoup4>=4.12.0",
+  "feedparser>=6.0.0",
+]
+pdf = [
+  "pdfplumber>=0.11.0",
+  "pypdfium2>=4.30.0",
+  "pytesseract>=0.3.10",
+  "Pillow>=10.0.0",
+]
+ocr = [
+  "pytesseract>=0.3.10",
+  "Pillow>=10.0.0",
+]
+web = [
+  "trafilatura>=1.8.0",
+]
+media = [
+  "openai-whisper",
+  "moviepy",
+  "youtube-transcript-api>=0.6.0",
+]
+audio_analysis = [
+  "pyannote.audio>=4.0.0",
+  "librosa>=0.10.0",
+  "soundfile>=0.12.0",
+]
+voice = [
+  "piper-tts[http]>=1.4.2,<2",
+]
+wake = [
+  "openwakeword==0.6.0",
+  "sounddevice>=0.5,<0.6",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["apps*", "core*", "services*", "channels*", "plugins*", "skills*", "schemas*", "db*", "ops*", "characters*", "evals", "evals.memory_benchmark*"]
+
+[tool.setuptools.package-data]
+services = ["prompts/*.md"]
+characters = ["*.json", "*.jpg", "*.png"]
+db = ["*.sql", "migrations/*.sql"]
+ops = ["docker-compose.runtime.yml"]
+"apps.tui" = ["*.tcss"]
+schemas = ["*.json"]
+skills = ["installed/*/SKILL.md"]
+"evals.memory_benchmark" = ["*.json", "*.jsonl", "README.md", "results/*.json"]

@@ -1,0 +1,10 @@
+{
+  "id": "video_gen",
+  "name": "Video Gen",
+  "version": "1.0.0",
+  "description": "Video generation via Runway",
+  "config_schema": {},
+  "tools": [
+    "generate_video"
+  ]
+}

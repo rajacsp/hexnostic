@@ -1,0 +1,11 @@
+{
+  "id": "hubspot",
+  "name": "Hubspot",
+  "version": "1.0.0",
+  "description": "HubSpot CRM deals integration",
+  "config_schema": {},
+  "tools": [
+    "hubspot_list_deals",
+    "hubspot_get_deal"
+  ]
+}

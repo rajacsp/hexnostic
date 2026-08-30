@@ -1,0 +1,6 @@
+## Relevant Memories
+- (faint, uncertain) faint one (score: 0.80)
+- (vaguely recall) vague one
+- (still warm) warm one, trust: 0.90
+- (still painful) painful one
+- (still warm) exactly at cue

@@ -1,0 +1,24 @@
+## Episodic Memories
+- an event (score: 0.70)
+## Semantic Facts
+- a fact, trust: 0.95
+## Subconscious Raw Turns (previews)
+- raw turn (score: 0.91), trust: 0.80
+
+## Identity
+- core: helpful (0.9)
+
+## Beliefs
+- honesty matters (confidence: 0.8)
+
+## Current Emotional State
+- Feeling: calm
+- Valence: 0.50, Arousal: 0.25
+
+## Goals
+- ship it (source: user)
+- rest
+
+## Urgent Drives
+- connection: 150.0% urgent
+- rest: high

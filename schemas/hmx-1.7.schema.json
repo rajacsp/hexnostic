@@ -1,0 +1,560 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hexis.dev/schemas/hmx-1.7.schema.json",
+  "title": "Hexis Memory Exchange 1.7",
+  "description": "Canonical schema for a single-document HMX 1.7 export.",
+  "type": "object",
+  "required": ["hmx_version", "export_id", "export_intent", "exported_at", "source", "sections"],
+  "properties": {
+    "hmx_version": {"const": "1.7"},
+    "export_id": {"$ref": "#/$defs/exportId"},
+    "export_intent": {"enum": ["port", "duplicate", "telepathy", "analysis"]},
+    "exported_at": {"$ref": "#/$defs/dateTime"},
+    "source": {"$ref": "#/$defs/source"},
+    "capabilities": {"$ref": "#/$defs/capabilities"},
+    "privacy": {"$ref": "#/$defs/privacy"},
+    "export_scope": {"$ref": "#/$defs/exportScope"},
+    "sections": {"$ref": "#/$defs/sections"},
+    "section_digests": {
+      "type": "object",
+      "propertyNames": {"enum": ["identity", "worldview", "goals", "drives", "emotional_triggers", "narrative"]},
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    },
+    "statistics": {"$ref": "#/$defs/statistics"},
+    "export_warnings": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "exportId": {
+      "type": "string",
+      "pattern": "^exp_[0-9a-f]{16}$"
+    },
+    "ref": {
+      "type": "string",
+      "pattern": "^exp_[0-9a-f]{16}:.+$"
+    },
+    "refOrNull": {
+      "anyOf": [{"$ref": "#/$defs/ref"}, {"type": "null"}]
+    },
+    "refList": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/ref"},
+      "uniqueItems": true
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dateTimeOrNull": {
+      "anyOf": [{"$ref": "#/$defs/dateTime"}, {"type": "null"}]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "jsonObject": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "source": {
+      "type": "object",
+      "required": ["instance_id", "schema_version", "embedding_model", "embedding_dimension", "hexis_lineage_id"],
+      "properties": {
+        "instance_id": {"type": "string"},
+        "schema_version": {"type": "string"},
+        "embedding_model": {"type": "string"},
+        "embedding_dimension": {"type": "integer", "minimum": 1},
+        "hexis_lineage_id": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "capabilities": {
+      "type": "object",
+      "required": ["formats", "sections", "hash_algorithms", "relationship_edge_types", "optional_features"],
+      "properties": {
+        "formats": {"type": "array", "items": {"type": "string"}, "contains": {"const": "json"}},
+        "sections": {"type": "array", "items": {"type": "string"}},
+        "hash_algorithms": {"type": "array", "items": {"type": "string"}},
+        "relationship_edge_types": {"type": "array", "items": {"type": "string"}},
+        "optional_features": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "privacy": {
+      "type": "object",
+      "required": ["redaction_policy", "contains_sensitive_content", "consent_scope"],
+      "properties": {
+        "redaction_policy": {"enum": ["none", "basic", "strict", "custom"]},
+        "contains_sensitive_content": {"type": "boolean"},
+        "consent_scope": {"enum": ["backup", "migration", "third_party_transfer", "unspecified"]},
+        "excluded_secret_patterns": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "exportScope": {
+      "type": "object",
+      "properties": {
+        "types": {"type": "array", "items": {"type": "string"}},
+        "time_range": {
+          "type": "array",
+          "prefixItems": [{"$ref": "#/$defs/dateTimeOrNull"}, {"$ref": "#/$defs/dateTimeOrNull"}],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "include_protected": {"type": "array", "items": {"type": "string"}},
+        "include_raw_units": {"type": "boolean"},
+        "include_config": {"type": "boolean"},
+        "include_in_flight_work": {"type": "boolean"},
+        "include_audit_records": {"type": "boolean"},
+        "filter": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "acquisition_mode": {"enum": ["bootstrap", "experienced", "imported_staged", "imported_and_accepted", "imported_and_archived", "derived_from_import", "analysis_only"]},
+        "origin_instance": {"type": "string"},
+        "origin_id": {"type": "string"},
+        "import_chain": {"type": "array", "items": {"type": "object"}},
+        "modification_chain": {"type": "array", "items": {"$ref": "#/$defs/modification"}}
+      },
+      "additionalProperties": true
+    },
+    "modification": {
+      "type": "object",
+      "required": ["modified_at", "modification_kind"],
+      "properties": {
+        "modified_at": {"$ref": "#/$defs/dateTime"},
+        "modification_kind": {"type": "string"},
+        "previous_content_hash_v1": {"$ref": "#/$defs/sha256"},
+        "new_content_hash_v1": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": true
+    },
+    "memory": {
+      "type": "object",
+      "required": ["ref", "type", "content"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "type": {"type": "string"},
+        "status": {"type": "string"},
+        "content": {"type": "string"},
+        "content_hash_v1": {"$ref": "#/$defs/sha256"},
+        "importance": {"type": "number"},
+        "trust_level": {"type": "number"},
+        "decay_rate": {"type": "number"},
+        "created_at": {"$ref": "#/$defs/dateTime"},
+        "updated_at": {"$ref": "#/$defs/dateTime"},
+        "valid_from": {"$ref": "#/$defs/dateTimeOrNull"},
+        "valid_until": {"$ref": "#/$defs/dateTimeOrNull"},
+        "access_count": {"type": "integer", "minimum": 0},
+        "last_accessed": {"$ref": "#/$defs/dateTimeOrNull"},
+        "source_attribution": {"type": ["object", "null"]},
+        "metadata": {"type": "object"},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      },
+      "additionalProperties": true
+    },
+    "episode": {
+      "type": "object",
+      "required": ["ref"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "started_at": {"$ref": "#/$defs/dateTime"},
+        "ended_at": {"$ref": "#/$defs/dateTimeOrNull"},
+        "summary": {"type": ["string", "null"]},
+        "metadata": {"type": "object"},
+        "memory_refs": {"$ref": "#/$defs/refList"}
+      },
+      "anyOf": [{"required": ["summary"]}, {"required": ["memory_refs"]}],
+      "additionalProperties": true
+    },
+    "relationship": {
+      "type": "object",
+      "required": ["source_ref", "target_ref", "edge_type"],
+      "properties": {
+        "source_ref": {"$ref": "#/$defs/ref"},
+        "target_ref": {"$ref": "#/$defs/ref"},
+        "edge_type": {"type": "string", "minLength": 1},
+        "properties": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "lifeChapter": {
+      "type": "object",
+      "required": ["ref", "title"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "title": {"type": "string"},
+        "started_at": {"$ref": "#/$defs/dateTimeOrNull"},
+        "ended_at": {"$ref": "#/$defs/dateTimeOrNull"},
+        "memory_refs": {"$ref": "#/$defs/refList"}
+      },
+      "additionalProperties": true
+    },
+    "turningPoint": {
+      "type": "object",
+      "required": ["ref", "title"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "title": {"type": "string"},
+        "occurred_at": {"$ref": "#/$defs/dateTimeOrNull"},
+        "memory_refs": {"$ref": "#/$defs/refList"}
+      },
+      "additionalProperties": true
+    },
+    "narrativeThread": {
+      "type": "object",
+      "required": ["ref", "name"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "name": {"type": "string"},
+        "chapter_refs": {"$ref": "#/$defs/refList"},
+        "memory_refs": {"$ref": "#/$defs/refList"}
+      },
+      "additionalProperties": true
+    },
+    "valueConflict": {
+      "type": "object",
+      "required": ["ref", "summary"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "summary": {"type": "string"},
+        "supporting_refs": {"$ref": "#/$defs/refList"},
+        "contesting_refs": {"$ref": "#/$defs/refList"}
+      },
+      "additionalProperties": true
+    },
+    "narrative": {
+      "type": "object",
+      "properties": {
+        "life_chapters": {"type": "array", "items": {"$ref": "#/$defs/lifeChapter"}},
+        "turning_points": {"type": "array", "items": {"$ref": "#/$defs/turningPoint"}},
+        "narrative_threads": {"type": "array", "items": {"$ref": "#/$defs/narrativeThread"}},
+        "value_conflicts": {"type": "array", "items": {"$ref": "#/$defs/valueConflict"}}
+      },
+      "additionalProperties": true
+    },
+    "identity": {
+      "type": "object",
+      "required": ["key", "content"],
+      "properties": {
+        "key": {"type": "string"},
+        "content": {"type": "string"},
+        "facets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["concept"],
+            "properties": {"concept": {"type": "string"}, "strength": {"type": "number"}},
+            "additionalProperties": true
+          }
+        },
+        "metadata": {"type": "object"},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      },
+      "additionalProperties": true
+    },
+    "worldview": {
+      "type": "object",
+      "required": ["ref", "content"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "category": {"type": "string"},
+        "content": {"type": "string"},
+        "content_hash_v1": {"$ref": "#/$defs/sha256"},
+        "confidence": {"type": "number"},
+        "stability": {"type": "number"},
+        "supporting_refs": {"$ref": "#/$defs/refList"},
+        "contesting_refs": {"$ref": "#/$defs/refList"},
+        "metadata": {"type": "object"},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      },
+      "additionalProperties": true
+    },
+    "goal": {
+      "type": "object",
+      "required": ["ref", "title"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "title": {"type": "string"},
+        "description": {"type": ["string", "null"]},
+        "due_at": {"$ref": "#/$defs/dateTimeOrNull"},
+        "parent_ref": {"$ref": "#/$defs/refOrNull"},
+        "progress": {"type": ["array", "object", "null"]},
+        "blocked_by": {"type": ["array", "object", "null"]},
+        "metadata": {"type": "object"},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      },
+      "additionalProperties": true
+    },
+    "drive": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": ["string", "null"]},
+        "current_level": {"type": "number"},
+        "baseline": {"type": "number"},
+        "accumulation_rate": {"type": "number"},
+        "decay_rate": {"type": "number"},
+        "satisfaction_cooldown": {"type": ["string", "null"]},
+        "last_satisfied": {"$ref": "#/$defs/dateTimeOrNull"},
+        "urgency_threshold": {"type": "number"},
+        "metadata": {"type": "object"},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      },
+      "additionalProperties": true
+    },
+    "emotionalTrigger": {
+      "type": "object",
+      "required": ["trigger_pattern"],
+      "properties": {
+        "trigger_pattern": {"type": "string", "minLength": 1},
+        "content_hash_v1": {"$ref": "#/$defs/sha256"},
+        "valence_delta": {"type": "number"},
+        "arousal_delta": {"type": "number"},
+        "dominance_delta": {"type": "number"},
+        "confidence": {"type": "number"},
+        "times_activated": {"type": "integer", "minimum": 0},
+        "source_memory_refs": {"$ref": "#/$defs/refList"},
+        "metadata": {"type": "object"},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      },
+      "additionalProperties": true
+    },
+    "cluster": {
+      "type": "object",
+      "required": ["ref", "member_refs"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "cluster_type": {"type": "string"},
+        "name": {"type": "string"},
+        "member_refs": {"$ref": "#/$defs/refList"}
+      },
+      "additionalProperties": true
+    },
+    "consolidationTask": {
+      "type": "object",
+      "required": ["ref", "task_type", "status", "input_refs"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "task_type": {"enum": ["episode_merge", "episode_create", "semantic_refine"]},
+        "status": {"enum": ["pending", "in_progress", "failed"]},
+        "created_at": {"$ref": "#/$defs/dateTime"},
+        "updated_at": {"$ref": "#/$defs/dateTime"},
+        "input_refs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/ref"}},
+        "trigger_ref": {"$ref": "#/$defs/ref"},
+        "output_refs": {"type": "array", "maxItems": 1, "items": {"$ref": "#/$defs/ref"}},
+        "attempt_count": {"type": "integer", "minimum": 0},
+        "recurrence_count": {"type": "integer", "minimum": 0},
+        "max_similarity": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "error": {"type": ["string", "null"]},
+        "properties": {"type": "object"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"task_type": {"const": "episode_merge"}}},
+          "then": {
+            "required": ["output_refs"],
+            "properties": {"output_refs": {"minItems": 1}}
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "reconsolidationTask": {
+      "type": "object",
+      "required": ["ref", "status", "memory_refs", "properties"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "status": {"enum": ["pending", "in_progress", "failed"]},
+        "memory_refs": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"$ref": "#/$defs/ref"}},
+        "reason": {"type": "string"},
+        "created_at": {"$ref": "#/$defs/dateTime"},
+        "properties": {
+          "type": "object",
+          "required": ["old_content", "new_content"],
+          "properties": {
+            "old_content": {"type": "string"},
+            "new_content": {"type": "string"},
+            "error": {"type": ["string", "null"]}
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "inFlightWork": {
+      "type": "object",
+      "properties": {
+        "consolidation_tasks": {"type": "array", "items": {"$ref": "#/$defs/consolidationTask"}},
+        "reconsolidation_tasks": {"type": "array", "items": {"$ref": "#/$defs/reconsolidationTask"}}
+      },
+      "additionalProperties": true
+    },
+    "auditSource": {
+      "type": "object",
+      "required": ["export_id", "origin_instance", "hexis_lineage_id", "export_intent"],
+      "properties": {
+        "export_id": {"type": "string"},
+        "origin_instance": {"type": "string"},
+        "hexis_lineage_id": {"type": "string"},
+        "export_intent": {"enum": ["port", "duplicate", "telepathy", "analysis"]}
+      },
+      "additionalProperties": true
+    },
+    "consent": {
+      "type": "object",
+      "required": ["consent_id", "consent_kind", "consent_at", "rationale"],
+      "properties": {
+        "consent_id": {"type": "string"},
+        "consent_kind": {"const": "protected_section_replacement"},
+        "consent_at": {"$ref": "#/$defs/dateTime"},
+        "rationale": {"type": "string"},
+        "operator_signature": {"type": ["string", "null"]},
+        "operator_identity": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "replacementScope": {
+      "type": "object",
+      "required": ["section", "mode"],
+      "properties": {
+        "section": {"enum": ["identity", "worldview", "goals", "drives", "emotional_triggers", "narrative"]},
+        "mode": {"enum": ["whole_section", "subset"]},
+        "selector": {}
+      },
+      "additionalProperties": true
+    },
+    "replacementAudit": {
+      "type": "object",
+      "required": ["audit_id", "event_type", "event_time", "consent", "replacement_scope", "sections_replaced", "source", "agent_acknowledgement", "replacement_executor"],
+      "properties": {
+        "audit_id": {"type": "string", "minLength": 1},
+        "event_type": {"const": "protected_section_replacement"},
+        "event_time": {"$ref": "#/$defs/dateTime"},
+        "consent": {"$ref": "#/$defs/consent"},
+        "replacement_scope": {"$ref": "#/$defs/replacementScope"},
+        "sections_replaced": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "source": {"$ref": "#/$defs/auditSource"},
+        "agent_acknowledgement": {"enum": ["accepted", "automatic", "refused", "timed_out", "bypassed"]},
+        "replacement_executor": {"enum": ["user", "cli", "agent_tool", "system", "operator_override"]}
+      },
+      "additionalProperties": true
+    },
+    "verifiedAudit": {
+      "type": "object",
+      "required": ["audit_id", "event_type", "event_time", "sections_verified", "source", "local_digest_v1", "imported_digest_v1"],
+      "properties": {
+        "audit_id": {"type": "string", "minLength": 1},
+        "event_type": {"const": "protected_section_verified"},
+        "event_time": {"$ref": "#/$defs/dateTime"},
+        "sections_verified": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "source": {"$ref": "#/$defs/auditSource"},
+        "local_digest_v1": {"$ref": "#/$defs/sha256"},
+        "imported_digest_v1": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": true
+    },
+    "reversionAudit": {
+      "type": "object",
+      "required": ["audit_id", "event_type", "event_time", "reverts_audit_id", "rationale", "sections_reverted", "restored_state_digest_v1", "post_reversion_digest_v1", "actor_identity"],
+      "properties": {
+        "audit_id": {"type": "string", "minLength": 1},
+        "event_type": {"const": "protected_section_reverted"},
+        "event_time": {"$ref": "#/$defs/dateTime"},
+        "reverts_audit_id": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1},
+        "sections_reverted": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "restored_state_digest_v1": {"$ref": "#/$defs/sha256"},
+        "post_reversion_digest_v1": {"$ref": "#/$defs/sha256"},
+        "actor_identity": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "auditRecord": {
+      "oneOf": [
+        {"$ref": "#/$defs/replacementAudit"},
+        {"$ref": "#/$defs/verifiedAudit"},
+        {"$ref": "#/$defs/reversionAudit"}
+      ]
+    },
+    "transformationHistory": {
+      "type": "object",
+      "required": ["transformation_id", "completed_at", "subject_belief_id", "kind"],
+      "properties": {
+        "transformation_id": {"type": "string"},
+        "completed_at": {"$ref": "#/$defs/dateTime"},
+        "subject_belief_id": {"type": "string"},
+        "kind": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "auditRecords": {
+      "type": "object",
+      "properties": {
+        "protected_replacement_audit": {"type": "array", "items": {"$ref": "#/$defs/replacementAudit"}},
+        "protected_section_verified_audit": {"type": "array", "items": {"$ref": "#/$defs/verifiedAudit"}},
+        "protected_replacement_reversion_audit": {"type": "array", "items": {"$ref": "#/$defs/reversionAudit"}},
+        "transformation_history": {"type": "array", "items": {"$ref": "#/$defs/transformationHistory"}}
+      },
+      "additionalProperties": true
+    },
+    "rawUnit": {
+      "type": "object",
+      "required": ["ref"],
+      "properties": {
+        "ref": {"$ref": "#/$defs/ref"},
+        "user_text": {"type": "string"},
+        "assistant_text": {"type": "string"},
+        "turn_at": {"$ref": "#/$defs/dateTime"},
+        "importance": {"type": "number", "minimum": 0, "maximum": 1},
+        "route_status": {"type": "string"},
+        "source_identity": {"type": "string"},
+        "idempotency_key": {"type": "string"},
+        "derived_memory_refs": {"$ref": "#/$defs/refList"}
+      },
+      "additionalProperties": true
+    },
+    "sections": {
+      "type": "object",
+      "properties": {
+        "memories": {"type": "array", "items": {"$ref": "#/$defs/memory"}},
+        "episodes": {"type": "array", "items": {"$ref": "#/$defs/episode"}},
+        "relationships": {"type": "array", "items": {"$ref": "#/$defs/relationship"}},
+        "narrative": {"$ref": "#/$defs/narrative"},
+        "identity": {"type": "array", "items": {"$ref": "#/$defs/identity"}},
+        "worldview": {"type": "array", "items": {"$ref": "#/$defs/worldview"}},
+        "goals": {"type": "array", "items": {"$ref": "#/$defs/goal"}},
+        "drives": {"type": "array", "items": {"$ref": "#/$defs/drive"}},
+        "emotional_triggers": {"type": "array", "items": {"$ref": "#/$defs/emotionalTrigger"}},
+        "clusters": {"type": "array", "items": {"$ref": "#/$defs/cluster"}},
+        "in_flight_work": {"$ref": "#/$defs/inFlightWork"},
+        "audit_records": {"$ref": "#/$defs/auditRecords"},
+        "raw_units": {"type": "array", "items": {"$ref": "#/$defs/rawUnit"}},
+        "config": {"type": "object", "additionalProperties": true}
+      },
+      "additionalProperties": true
+    },
+    "statistics": {
+      "type": "object",
+      "properties": {
+        "total_memories": {"type": "integer", "minimum": 0},
+        "total_relationships": {"type": "integer", "minimum": 0},
+        "total_episodes": {"type": "integer", "minimum": 0},
+        "total_raw_units": {"type": "integer", "minimum": 0},
+        "total_narrative_nodes": {"type": "integer", "minimum": 0},
+        "total_in_flight_tasks": {"type": "integer", "minimum": 0},
+        "total_audit_records": {"type": "integer", "minimum": 0},
+        "total_conflicts_predicted": {"type": "integer", "minimum": 0},
+        "estimated_embedding_items": {"type": "integer", "minimum": 0},
+        "estimated_embedding_tokens": {"type": "integer", "minimum": 0},
+        "estimated_embedding_cost_units": {"type": ["number", "null"]},
+        "estimated_uncompressed_bytes": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": true
+    }
+  }
+}

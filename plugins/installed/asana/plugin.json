@@ -1,0 +1,11 @@
+{
+  "id": "asana",
+  "name": "Asana",
+  "version": "1.0.0",
+  "description": "Asana project and task integration",
+  "config_schema": {},
+  "tools": [
+    "asana_create_task",
+    "asana_list_projects"
+  ]
+}

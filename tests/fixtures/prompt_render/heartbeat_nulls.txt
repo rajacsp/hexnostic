@@ -1,0 +1,86 @@
+## Heartbeat #0
+
+## Agent Profile
+Objectives:
+  (none)
+
+Guardrails:
+  (none)
+
+Tools:
+  (none)
+
+Budget:
+{}
+
+## Current Time
+Unknown
+Day of week: ?, Hour: ?
+
+## Environment
+- Time since last user interaction: Never hours
+- Pending events: 0
+- Journal: no entries yet
+
+## Your Goals
+Active (0):
+  (none)
+
+Queued (0):
+  (none)
+
+Issues:
+  (none)
+
+## Narrative
+  (none)
+
+## Recent Experience
+  (no recent memories)
+
+## Your Identity
+  (no identity aspects defined)
+
+## Your Self-Model
+  (empty)
+
+## Relationships
+  (none)
+
+## Your Beliefs
+  (no beliefs defined)
+
+## Contradictions
+  (none)
+
+## Emotional Patterns
+  (none)
+
+## Active Transformations
+  (none)
+
+## Transformations Ready
+  (none)
+
+## Current Emotional State
+  (none)
+
+## Urgent Drives
+  (none)
+
+## Energy
+Available: 0
+Max: 20
+
+## Backlog
+  (no pending tasks)
+
+## Allowed Actions
+  (all actions enabled)
+
+## Action Costs
+  (unknown)
+
+---
+
+What do you want to do this heartbeat? Respond with STRICT JSON.

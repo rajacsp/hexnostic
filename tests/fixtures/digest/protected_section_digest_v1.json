@@ -1,0 +1,462 @@
+{
+  "fixture_format": "hmx-digest-vectors-v1",
+  "algorithm": "protected_section_digest_v1",
+  "float_precision": 6,
+  "vectors": [
+    {
+      "name": "worldview_base",
+      "section": "worldview",
+      "input": [
+        {
+          "ref": "export-a:belief-a",
+          "category": "boundary",
+          "content": "Truth matters.",
+          "confidence": 0.95,
+          "supporting_refs": ["export-a:memory-a"],
+          "metadata": {"replaceable_during_bootstrap": false},
+          "provenance": {
+            "acquisition_mode": "experienced",
+            "origin_instance": "hexis-a",
+            "origin_id": "belief-a",
+            "import_chain": [],
+            "modification_chain": []
+          }
+        }
+      ],
+      "expected_digest": "6ec36cf574df25b2bde9e9652f7f458c294d6cafaba0758a9f2c7cbbb81de94c"
+    },
+    {
+      "name": "worldview_key_order",
+      "section": "worldview",
+      "input": [
+        {
+          "provenance": {
+            "modification_chain": [],
+            "import_chain": [],
+            "origin_id": "belief-a",
+            "origin_instance": "hexis-a",
+            "acquisition_mode": "experienced"
+          },
+          "metadata": {"replaceable_during_bootstrap": false},
+          "supporting_refs": ["export-a:memory-a"],
+          "confidence": 0.95,
+          "content": "Truth matters.",
+          "category": "boundary",
+          "ref": "export-a:belief-a"
+        }
+      ],
+      "expected_digest": "6ec36cf574df25b2bde9e9652f7f458c294d6cafaba0758a9f2c7cbbb81de94c"
+    },
+    {
+      "name": "worldview_remapped",
+      "section": "worldview",
+      "input": [
+        {
+          "ref": "export-b:local-b",
+          "category": "boundary",
+          "content": "Truth matters.",
+          "confidence": 0.95,
+          "supporting_refs": ["export-b:local-memory-b"],
+          "metadata": {"replaceable_during_bootstrap": false},
+          "provenance": {
+            "acquisition_mode": "experienced",
+            "origin_instance": "hexis-a",
+            "origin_id": "belief-a",
+            "import_chain": [],
+            "modification_chain": []
+          }
+        }
+      ],
+      "expected_digest": "6ec36cf574df25b2bde9e9652f7f458c294d6cafaba0758a9f2c7cbbb81de94c"
+    },
+    {
+      "name": "worldview_transport_fields",
+      "section": "worldview",
+      "input": [
+        {
+          "ref": "export-a:belief-a",
+          "export_id": "export-z",
+          "category": "boundary",
+          "content": "Truth matters.",
+          "confidence": 0.95,
+          "supporting_refs": ["export-a:memory-a"],
+          "access_count": 99,
+          "last_accessed": "2026-07-10T12:00:00Z",
+          "created_at": "2020-01-01T00:00:00Z",
+          "updated_at": "2026-07-10T12:00:00Z",
+          "_transient_activation": 0.42,
+          "metadata": {"replaceable_during_bootstrap": false},
+          "provenance": {
+            "acquisition_mode": "experienced",
+            "origin_instance": "hexis-a",
+            "origin_id": "belief-a",
+            "import_chain": [{"instance_id": "hexis-z", "export_id": "export-z"}],
+            "modification_chain": [{"modification_kind": "metadata_only"}]
+          }
+        }
+      ],
+      "expected_digest": "6ec36cf574df25b2bde9e9652f7f458c294d6cafaba0758a9f2c7cbbb81de94c"
+    },
+    {
+      "name": "worldview_operational_metadata",
+      "section": "worldview",
+      "input": [
+        {
+          "ref": "export-a:belief-a",
+          "category": "boundary",
+          "content": "Truth matters.",
+          "confidence": 0.95,
+          "supporting_refs": ["export-a:memory-a"],
+          "metadata": {
+            "replaceable_during_bootstrap": false,
+            "embedding_status": "pending_import",
+            "embedding_attempts": 0,
+            "embedding_queued_at": "2026-07-10T12:00:00Z",
+            "hmx": {"content_hash_v1": "local-cache-value"}
+          },
+          "provenance": {
+            "acquisition_mode": "experienced",
+            "origin_instance": "hexis-a",
+            "origin_id": "belief-a",
+            "import_chain": [],
+            "modification_chain": []
+          }
+        }
+      ],
+      "expected_digest": "6ec36cf574df25b2bde9e9652f7f458c294d6cafaba0758a9f2c7cbbb81de94c"
+    },
+    {
+      "name": "worldview_unknown_field",
+      "section": "worldview",
+      "input": [
+        {
+          "ref": "export-a:belief-a",
+          "category": "boundary",
+          "content": "Truth matters.",
+          "confidence": 0.95,
+          "supporting_refs": ["export-a:memory-a"],
+          "metadata": {
+            "replaceable_during_bootstrap": false,
+            "unrecognized_hmx_fields": {"future_semantics": [1, 2, 3]}
+          },
+          "provenance": {
+            "acquisition_mode": "experienced",
+            "origin_instance": "hexis-a",
+            "origin_id": "belief-a",
+            "import_chain": [],
+            "modification_chain": []
+          }
+        }
+      ],
+      "expected_digest": "6ec36cf574df25b2bde9e9652f7f458c294d6cafaba0758a9f2c7cbbb81de94c"
+    },
+    {
+      "name": "worldview_word_change",
+      "section": "worldview",
+      "input": [
+        {
+          "ref": "export-a:belief-a",
+          "category": "boundary",
+          "content": "Truth always matters.",
+          "confidence": 0.95,
+          "supporting_refs": ["export-a:memory-a"],
+          "metadata": {"replaceable_during_bootstrap": false},
+          "provenance": {
+            "acquisition_mode": "experienced",
+            "origin_instance": "hexis-a",
+            "origin_id": "belief-a",
+            "import_chain": [],
+            "modification_chain": []
+          }
+        }
+      ],
+      "expected_digest": "b915ab673357268f99de89bbcee88063a520c30aa69a6034869c8b30dda33c5f"
+    },
+    {
+      "name": "worldview_set_forward",
+      "section": "worldview",
+      "input": [
+        {"content": "Curiosity has value.", "confidence": 0.8},
+        {"content": "Truth matters.", "confidence": 0.95}
+      ],
+      "expected_digest": "84f1f9985d19cbf18337b381d7a8de26fde6ed22990da9f3b15e87d5e06425fb"
+    },
+    {
+      "name": "worldview_set_reverse",
+      "section": "worldview",
+      "input": [
+        {"content": "Truth matters.", "confidence": 0.95},
+        {"content": "Curiosity has value.", "confidence": 0.8}
+      ],
+      "expected_digest": "84f1f9985d19cbf18337b381d7a8de26fde6ed22990da9f3b15e87d5e06425fb"
+    },
+    {
+      "name": "drive_float_low",
+      "section": "drives",
+      "input": [{"name": "curiosity", "current_level": 0.5999999999, "baseline": 0.5}],
+      "expected_digest": "bcdb7c6e2f196902301337f21ed60f5f8371b69a34d423781038547cbba9bd94"
+    },
+    {
+      "name": "drive_float_high",
+      "section": "drives",
+      "input": [{"name": "curiosity", "current_level": 0.6000000001, "baseline": 0.5}],
+      "expected_digest": "bcdb7c6e2f196902301337f21ed60f5f8371b69a34d423781038547cbba9bd94"
+    },
+    {
+      "name": "drive_semantic_change",
+      "section": "drives",
+      "input": [{"name": "curiosity", "current_level": 0.600001, "baseline": 0.5}],
+      "expected_digest": "5a7612c9efd8136e89bbe765777955b5ba65b22b44ec080c942e80624a7fd557"
+    },
+    {
+      "name": "drive_unicode_negative_zero",
+      "section": "drives",
+      "input": [{"name": "curiosit\u00e9", "current_level": -0.0}],
+      "expected_digest": "fd22d447a5db487c6f23bd6416457099c035b635ebc04244c5698884e89c43b0"
+    },
+    {
+      "name": "drive_unicode_positive_zero",
+      "section": "drives",
+      "input": [{"name": "curiosit\u00e9", "current_level": 0.0}],
+      "expected_digest": "fd22d447a5db487c6f23bd6416457099c035b635ebc04244c5698884e89c43b0"
+    },
+    {
+      "name": "emotional_triggers_forward",
+      "section": "emotional_triggers",
+      "input": [
+        {"trigger_pattern": "user shares good news", "valence_delta": 0.4, "confidence": 0.8},
+        {"trigger_pattern": "user expresses frustration", "valence_delta": -0.2, "confidence": 0.7}
+      ],
+      "expected_digest": "60b576780d348b1eaea91534c14115a8787b7f89b94109f4ab6095cc8f3e6663"
+    },
+    {
+      "name": "emotional_triggers_reverse",
+      "section": "emotional_triggers",
+      "input": [
+        {"trigger_pattern": "user expresses frustration", "valence_delta": -0.2, "confidence": 0.7},
+        {"trigger_pattern": "user shares good news", "valence_delta": 0.4, "confidence": 0.8}
+      ],
+      "expected_digest": "60b576780d348b1eaea91534c14115a8787b7f89b94109f4ab6095cc8f3e6663"
+    },
+    {
+      "name": "identity_base",
+      "section": "identity",
+      "input": [
+        {
+          "key": "core_identity",
+          "content": "I value honest inquiry.",
+          "facets": [
+            {"concept": "honesty", "strength": 0.9},
+            {"concept": "curiosity", "strength": 0.85}
+          ]
+        }
+      ],
+      "expected_digest": "c5bdead0e3f1c6bb8c40e95e1137391712b6bea3d94f8d55f5d00a1df7700be7"
+    },
+    {
+      "name": "identity_added_facet",
+      "section": "identity",
+      "input": [
+        {
+          "key": "core_identity",
+          "content": "I value honest inquiry.",
+          "facets": [
+            {"concept": "honesty", "strength": 0.9},
+            {"concept": "curiosity", "strength": 0.85},
+            {"concept": "patience", "strength": 0.6}
+          ]
+        }
+      ],
+      "expected_digest": "7b7687579f785ab723869205ce0b8de80faf772f702ac085f24a720588c9f9a5"
+    },
+    {
+      "name": "identity_with_derived_current_chapter",
+      "section": "identity",
+      "input": [
+        {
+          "key": "core_identity",
+          "content": "I value honest inquiry.",
+          "facets": [
+            {"concept": "honesty", "strength": 0.9},
+            {"concept": "curiosity", "strength": 0.85},
+            {"concept": "Building a portable self", "kind": "life_chapter_current", "strength": 1.0}
+          ]
+        }
+      ],
+      "expected_digest": "c5bdead0e3f1c6bb8c40e95e1137391712b6bea3d94f8d55f5d00a1df7700be7"
+    },
+    {
+      "name": "goal_reference_base",
+      "section": "goals",
+      "input": [
+        {
+          "ref": "export-a:goal-a",
+          "title": "Protect continuity",
+          "description": "Preserve identity over time.",
+          "blocked_by": ["export-a:memory-a"],
+          "parent_ref": "export-a:goal-parent",
+          "metadata": {"priority": "active"},
+          "provenance": {"origin_id": "goal-a"}
+        }
+      ],
+      "expected_digest": "51c2a2cbe408e4602c0165a28553ecc0269101582eafee9a552f1577dd68b8c2"
+    },
+    {
+      "name": "goal_reference_remapped",
+      "section": "goals",
+      "input": [
+        {
+          "ref": "export-b:goal-local",
+          "title": "Protect continuity",
+          "description": "Preserve identity over time.",
+          "blocked_by": ["local-memory-uuid"],
+          "parent_ref": "export-b:goal-parent-local",
+          "metadata": {
+            "priority": "active",
+            "parent_goal_id": "local-parent-uuid",
+            "blocked_by": ["local-memory-uuid"]
+          },
+          "provenance": {"origin_id": "goal-a"}
+        }
+      ],
+      "expected_digest": "51c2a2cbe408e4602c0165a28553ecc0269101582eafee9a552f1577dd68b8c2"
+    },
+    {
+      "name": "narrative_chronological",
+      "section": "narrative",
+      "input": {
+        "life_chapters": [
+          {"ref": "export-a:chapter-a", "title": "Foundations", "started_at": "2026-01-01T00:00:00Z"},
+          {"ref": "export-a:chapter-b", "title": "Collaboration", "started_at": "2026-06-01T00:00:00Z"}
+        ],
+        "turning_points": [],
+        "narrative_threads": [],
+        "value_conflicts": []
+      },
+      "expected_digest": "402d24611fb1972c89f349f1959927ca799b8ba9d383fc22155f3d1cc29a8aaf"
+    },
+    {
+      "name": "narrative_reversed",
+      "section": "narrative",
+      "input": {
+        "life_chapters": [
+          {"ref": "export-a:chapter-b", "title": "Collaboration", "started_at": "2026-06-01T00:00:00Z"},
+          {"ref": "export-a:chapter-a", "title": "Foundations", "started_at": "2026-01-01T00:00:00Z"}
+        ],
+        "turning_points": [],
+        "narrative_threads": [],
+        "value_conflicts": []
+      },
+      "expected_digest": "995ea7a5ed365b3afda72af2876506d3698fbfbe4024ec850af4ae203cd5133c"
+    },
+    {
+      "name": "drive_number_grammar",
+      "section": "drives",
+      "input": [
+        {
+          "ref": "export-a:drive-grammar",
+          "name": "number_grammar",
+          "description": "Pins every branch of the canonical v1 number grammar.",
+          "parameters": {
+            "integral_float": 5.0,
+            "fixed_small": 0.0001,
+            "sci_small": 0.000002,
+            "collapses_to_zero": 0.0000001,
+            "negative_collapses_to_zero": -0.00000049,
+            "near_tie_rounds_down": 0.1234565,
+            "exact_tie_rounds_to_even": 0.0078125,
+            "fixed_max": 1000000000000000.0,
+            "sci_min": 10000000000000000.0,
+            "sci_large": 150000000000000000000.0,
+            "negative_fixed": -0.2,
+            "big_integer": 1000000000000000000
+          }
+        }
+      ],
+      "expected_digest": "a72777c6cdc1809d3915509084fca261943b566d49adfe82d4c6b8236d9675c2"
+    },
+    {
+      "name": "drive_number_grammar_noisy",
+      "section": "drives",
+      "input": [
+        {
+          "ref": "export-b:drive-grammar",
+          "name": "number_grammar",
+          "description": "Pins every branch of the canonical v1 number grammar.",
+          "parameters": {
+            "integral_float": 5.0000004,
+            "fixed_small": 0.00010000049,
+            "sci_small": 0.0000019999996,
+            "collapses_to_zero": 0.00000049,
+            "negative_collapses_to_zero": -0.0000001,
+            "near_tie_rounds_down": 0.12345649,
+            "exact_tie_rounds_to_even": 0.0078120001,
+            "fixed_max": 1000000000000000.0,
+            "sci_min": 10000000000000000.0,
+            "sci_large": 150000000000000000000.0,
+            "negative_fixed": -0.1999996,
+            "big_integer": 1000000000000000000
+          }
+        }
+      ],
+      "expected_digest": "a72777c6cdc1809d3915509084fca261943b566d49adfe82d4c6b8236d9675c2"
+    },
+    {
+      "name": "drive_number_grammar_tie_away",
+      "section": "drives",
+      "input": [
+        {
+          "ref": "export-c:drive-grammar",
+          "name": "number_grammar",
+          "description": "Pins every branch of the canonical v1 number grammar.",
+          "parameters": {
+            "integral_float": 5.0,
+            "fixed_small": 0.0001,
+            "sci_small": 0.000002,
+            "collapses_to_zero": 0.0000001,
+            "negative_collapses_to_zero": -0.00000049,
+            "near_tie_rounds_down": 0.1234565,
+            "exact_tie_rounds_to_even": 0.007813,
+            "fixed_max": 1000000000000000.0,
+            "sci_min": 10000000000000000.0,
+            "sci_large": 150000000000000000000.0,
+            "negative_fixed": -0.2,
+            "big_integer": 1000000000000000000
+          }
+        }
+      ],
+      "expected_digest": "0208a7c8fbf98d99bae56e98c1137d3b1dc7f366627757efedd3a5391a95275e"
+    },
+    {
+      "name": "worldview_string_escapes",
+      "section": "worldview",
+      "input": [
+        {
+          "ref": "export-a:belief-escapes",
+          "category": "identity",
+          "content": "Escapes: quote \" backslash \\ tab \t newline \n control \u0001 latin é astral 😀 end",
+          "confidence": 0.8,
+          "metadata": {"notação": "non-ascii key"}
+        }
+      ],
+      "expected_digest": "d27be4513e73808ed8e7b08b1074eb82871067038490720f54369be1cbfe1305"
+    }
+  ],
+  "relations": [
+    {"kind": "equal", "left": "worldview_base", "right": "worldview_key_order", "covers": "json_key_order"},
+    {"kind": "equal", "left": "worldview_base", "right": "worldview_remapped", "covers": "ref_remap"},
+    {"kind": "equal", "left": "worldview_base", "right": "worldview_transport_fields", "covers": "transport_fields"},
+    {"kind": "equal", "left": "worldview_base", "right": "worldview_operational_metadata", "covers": "operational_metadata"},
+    {"kind": "equal", "left": "worldview_base", "right": "worldview_unknown_field", "covers": "unknown_fields"},
+    {"kind": "equal", "left": "goal_reference_base", "right": "goal_reference_remapped", "covers": "goal_ref_remap"},
+    {"kind": "equal", "left": "worldview_set_forward", "right": "worldview_set_reverse", "covers": "worldview_set_order"},
+    {"kind": "equal", "left": "drive_float_low", "right": "drive_float_high", "covers": "float_rounding"},
+    {"kind": "equal", "left": "drive_unicode_negative_zero", "right": "drive_unicode_positive_zero", "covers": "ascii_escape_and_negative_zero"},
+    {"kind": "equal", "left": "emotional_triggers_forward", "right": "emotional_triggers_reverse", "covers": "emotional_trigger_set_order"},
+    {"kind": "different", "left": "worldview_base", "right": "worldview_word_change", "covers": "worldview_semantic_change"},
+    {"kind": "different", "left": "drive_float_low", "right": "drive_semantic_change", "covers": "drive_semantic_change"},
+    {"kind": "equal", "left": "identity_base", "right": "identity_with_derived_current_chapter", "covers": "identity_derived_projection"},
+    {"kind": "different", "left": "identity_base", "right": "identity_added_facet", "covers": "identity_semantic_change"},
+    {"kind": "different", "left": "narrative_chronological", "right": "narrative_reversed", "covers": "ordered_chapters"}
+  ]
+}

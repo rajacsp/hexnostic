@@ -1,0 +1,71 @@
+*.db
+.states
+.web
+assets/external/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+!hexis-ui/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Environment variables
+.env
+.env.*
+!.env.local
+!.env.example
+
+# PostgreSQL
+*.sql.gz
+postgres_data/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+playwright-report/
+test-results/
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/
+
+# Misc
+.cache/
+.tmp/
+.reference/
+.notes/
+evals/out/

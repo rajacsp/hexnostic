@@ -1,0 +1,225 @@
+/* Hexis TUI — shared stylesheet.
+   Colors come from the `hexis` theme (see design.py). Reference theme
+   variables ($primary, $secondary, $muted, $dim …) — never hard-code hex. */
+
+Screen {
+    background: $background;
+    color: $foreground;
+    layers: base overlay;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+Button {
+    margin: 1 1;
+    min-width: 12;
+    border: none;
+    height: 3;
+}
+
+Button.primary {
+    background: $primary;
+    color: $background;
+    text-style: bold;
+}
+Button.primary:hover { background: $accent; }
+
+Button.secondary {
+    background: $secondary;
+    color: $foreground;
+}
+Button.secondary:hover { background: $teal-dim; }
+
+Button.muted {
+    background: $surface;
+    color: $dim;
+}
+Button.muted:hover { background: $elevated; color: $foreground; }
+
+/* ── Inputs / Select ─────────────────────────────────────────────────────── */
+
+Input, Select {
+    margin: 1 0;
+    border: tall $muted;
+    background: $surface;
+}
+Input:focus, Select:focus { border: tall $primary; }
+Input.-valid { border: tall $success; }
+
+RadioSet {
+    margin: 1 0;
+    border: round $muted;
+    padding: 1 2;
+    background: $surface;
+}
+RadioSet:focus { border: round $primary; }
+
+/* Model combobox dropdown (inline, under the model field) */
+ModelMenu {
+    max-height: 9;
+    height: auto;
+    margin: 0 0 1 0;
+    border: round $muted;
+    background: $elevated;
+}
+ModelMenu:focus { border: round $primary; }
+ModelMenu > .option-list--option-highlighted { background: $secondary 35%; color: $strong; }
+
+DataTable {
+    height: 1fr;
+    scrollbar-size: 1 1;
+    background: $surface;
+}
+DataTable > .datatable--cursor { background: $secondary 35%; }
+DataTable > .datatable--header { color: $primary; text-style: bold; }
+
+/* ── Panels ──────────────────────────────────────────────────────────────── */
+
+.panel {
+    background: $surface;
+    border: round $muted;
+    padding: 1 2;
+    margin: 1 0;
+}
+.panel-title { color: $primary; text-style: bold; }
+.form-container { padding: 1 4; height: 1fr; overflow-y: auto; }
+.form-label { color: $secondary; margin: 1 0 0 0; }
+.hint { color: $dim; }
+.button-bar {
+    dock: bottom;
+    height: 3;
+    align: center middle;
+    background: $surface;
+}
+
+/* ── Step bar (init) ─────────────────────────────────────────────────────── */
+
+StepBar {
+    height: 3;
+    dock: top;
+    background: $surface;
+    padding: 0 2;
+    content-align: center middle;
+}
+
+/* ── Big-Five slider (init) ──────────────────────────────────────────────── */
+
+.big-five-row { height: 1; margin: 0 0; }
+.big-five-label {
+    width: 20;
+    content-align: right middle;
+    padding: 0 1;
+    color: $secondary;
+}
+TraitSlider { width: 1fr; height: 1; }
+TraitSlider:focus { color: $primary; }
+
+/* ── Character gallery (init) ────────────────────────────────────────────── */
+
+#character-gallery { height: 1fr; }
+#char-table { width: 2fr; height: 1fr; }
+#char-preview {
+    width: 1fr;
+    min-width: 32;
+    border-left: tall $muted;
+    padding: 1 2;
+    height: 1fr;
+    background: $surface;
+}
+
+/* ── Consent (init) ──────────────────────────────────────────────────────── */
+
+.consent-container { align: center middle; width: 100%; height: 1fr; padding: 1 4; }
+.consent-result { width: 100%; height: 1fr; padding: 1 4; overflow-y: auto; }
+
+/* ── Dialogs ─────────────────────────────────────────────────────────────── */
+
+ConfirmDialog, ErrorDialog { align: center middle; }
+ConfirmDialog .dialog-box, ErrorDialog .dialog-box {
+    width: 60;
+    height: auto;
+    max-height: 22;
+    border: round $muted;
+    background: $surface;
+    padding: 2 4;
+}
+.dialog-title { text-align: center; text-style: bold; color: $primary; margin: 0 0 1 0; }
+.dialog-body { text-align: center; margin: 0 0 2 0; color: $foreground; }
+.dialog-buttons { align: center middle; height: 3; }
+
+/* Inline Anthropic OAuth login — wider box for the auth URL + code input */
+#anthropic-login-box {
+    width: 84;
+    max-height: 26;
+    height: auto;
+}
+#anthropic-login-url { color: $dim; margin: 0 0 1 0; }
+#anthropic-login-status { height: auto; margin: 1 0 0 0; }
+
+/* ── Chat ────────────────────────────────────────────────────────────────── */
+
+#chat-header {
+    dock: top;
+    height: 1;
+    background: $surface;
+    padding: 0 2;
+    color: $foreground;
+}
+
+#transcript {
+    height: 1fr;
+    padding: 0 1;
+    scrollbar-size: 1 1;
+    background: $background;
+}
+
+/* one grouped turn */
+.turn { height: auto; padding: 0 0 1 0; }
+.role-label { height: 1; text-style: bold; }
+.role-user { color: $primary; }
+.role-assistant { color: $secondary; }
+.msg-body { padding: 0 0 0 2; height: auto; }
+.msg-body Markdown { background: $background; margin: 0; }
+.msg-info { color: $dim; padding: 0 0 0 2; }
+.msg-error { color: $error; text-style: bold; padding: 0 0 0 2; }
+
+/* streaming block */
+StreamingBlock { padding: 0 0 0 2; height: auto; color: $foreground; }
+
+/* reasoning — dim, dashed, downplayed */
+.reasoning {
+    margin: 0 0 0 2;
+    border: dashed $muted;
+    color: $dim;
+    background: $surface;
+}
+.reasoning > .collapsible--title { color: $dim; }
+
+/* tool tree */
+.tool-tree { margin: 0 0 0 2; color: $dim; height: auto; }
+.tool-tree > .collapsible--title { color: $secondary; }
+.tool-line { height: auto; color: $dim; }
+
+/* composer */
+#composer {
+    height: 3;
+    margin: 0;
+    border: tall $muted;
+    background: $surface;
+}
+#composer:focus { border: tall $primary; }
+
+.queued-hint { height: 1; color: $dim; padding: 0 2; background: $surface; }
+
+/* slash-command menu */
+SlashMenu {
+    layer: overlay;
+    dock: bottom;
+    width: 100%;
+    height: auto;
+    max-height: 10;
+    margin: 0 0 4 0;
+    background: $elevated;
+    border: round $muted;
+}
+SlashMenu > .option-list--option-highlighted { background: $secondary 35%; color: $strong; }

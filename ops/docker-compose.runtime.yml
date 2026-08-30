@@ -1,0 +1,322 @@
+# Runtime compose file for pip-installed Hexis.
+# Uses pre-built images from GHCR instead of local build: directives.
+# Automatically selected by `hexis up` when not in a source checkout.
+# HEXIS_IMAGE_TAG pins the image version; the CLI sets it to its own
+# package version so a given pip release always runs the images built
+# from the same commit. `latest` (= newest release) is only the fallback.
+
+services:
+  db:
+    image: ghcr.io/quixiai/hexis-brain:${HEXIS_IMAGE_TAG:-latest}
+    container_name: hexis_brain
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hexis_memory}
+      POSTGRES_USER: ${POSTGRES_USER:-hexis_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hexis_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # host.docker.internal resolves automatically on Docker Desktop (macOS/
+    # Windows) but NOT on native Linux Docker — map it to the host gateway so
+    # the DB can reach the embedding sidecar on the host everywhere.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hexis_user} -d ${POSTGRES_DB:-hexis_memory}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${POSTGRES_PORT:-43815}:5432"
+    # public FIRST: Hexis functions live in public and must shadow nothing;
+    # ag_catalog stays on the path so AGE (cypher, agtype) works unqualified.
+    # (ag_catalog-first caused stale shadow copies — migration 0043.)
+    command:
+      - postgres
+      - -c
+      - search_path=public,ag_catalog
+      - -c
+      - app.embedding_dimension=${EMBEDDING_DIMENSION:-768}
+      - -c
+      - app.embedding_service_url=${EMBEDDING_SERVICE_URL:-http://host.docker.internal:42666/api/embed}
+      - -c
+      - app.embedding_model_id=${EMBEDDING_MODEL_ID:-embeddinggemma:300m-qat-q4_0}
+    networks:
+      - public
+      - private
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: hexis_rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-hexis}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-hexis_password}
+    ports:
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${RABBITMQ_PORT:-45672}:5672"
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${RABBITMQ_MANAGEMENT_PORT:-45673}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - public
+      - private
+
+  # Embeddings are provided by the published embeddinggemma sidecar running on the host (default).
+  # The DB connects to it via host.docker.internal:42666.
+  # To use HuggingFace TEI instead, uncomment the service below and set:
+  #   EMBEDDING_SERVICE_URL=http://embeddings:80/embed
+  #
+  # embeddings:
+  #   image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.8
+  #   container_name: hexis_embeddings
+  #   platform: linux/amd64
+  #   command:
+  #     - --model-id
+  #     - ${EMBEDDING_MODEL_ID:-unsloth/embeddinggemma-300m}
+  #     - --dtype
+  #     - float32
+  #   environment:
+  #     EMBEDDING_MODEL_ID: ${EMBEDDING_MODEL_ID:-unsloth/embeddinggemma-300m}
+  #     EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-768}
+  #     HF_HOME: /data
+  #     HUGGINGFACE_HUB_CACHE: /data
+  #   expose:
+  #     - "80"
+  #   volumes:
+  #     - ${EMBEDDINGS_CACHE_DIR:-/tmp/hexis_embeddings_cache}:/data
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 60s
+  #   networks:
+  #     - private
+  #     - public
+
+  heartbeat_worker:
+    image: ghcr.io/quixiai/hexis-worker:${HEXIS_IMAGE_TAG:-latest}
+    container_name: hexis_heartbeat_worker
+    restart: unless-stopped
+    command: ["hexis-worker", "--mode", "heartbeat"]
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-hexis_memory}
+      POSTGRES_USER: ${POSTGRES_USER:-hexis_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hexis_password}
+      EMBEDDING_MODEL_ID: ${EMBEDDING_MODEL_ID:-unsloth/embeddinggemma-300m}
+      EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-768}
+      RABBITMQ_MANAGEMENT_URL: http://rabbitmq:15672
+      RABBITMQ_USER: ${RABBITMQ_DEFAULT_USER:-hexis}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-hexis_password}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      HEXIS_LLM_CONSCIOUS_API_KEY: ${HEXIS_LLM_CONSCIOUS_API_KEY:-}
+      HEXIS_LLM_SUBCONSCIOUS_API_KEY: ${HEXIS_LLM_SUBCONSCIOUS_API_KEY:-}
+    volumes:
+      - ~/.hexis:/root/.hexis
+    networks:
+      - private
+      - public
+
+  maintenance_worker:
+    image: ghcr.io/quixiai/hexis-worker:${HEXIS_IMAGE_TAG:-latest}
+    container_name: hexis_maintenance_worker
+    restart: unless-stopped
+    command: ["hexis-worker", "--mode", "maintenance"]
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-hexis_memory}
+      POSTGRES_USER: ${POSTGRES_USER:-hexis_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hexis_password}
+      EMBEDDING_MODEL_ID: ${EMBEDDING_MODEL_ID:-unsloth/embeddinggemma-300m}
+      EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-768}
+      RABBITMQ_MANAGEMENT_URL: http://rabbitmq:15672
+      RABBITMQ_USER: ${RABBITMQ_DEFAULT_USER:-hexis}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-hexis_password}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      HEXIS_LLM_CONSCIOUS_API_KEY: ${HEXIS_LLM_CONSCIOUS_API_KEY:-}
+      HEXIS_LLM_SUBCONSCIOUS_API_KEY: ${HEXIS_LLM_SUBCONSCIOUS_API_KEY:-}
+    volumes:
+      - ~/.hexis:/root/.hexis
+    networks:
+      - private
+      - public
+
+  api:
+    image: ghcr.io/quixiai/hexis-worker:${HEXIS_IMAGE_TAG:-latest}
+    container_name: hexis_api
+    restart: unless-stopped
+    command: ["hexis-api", "--host", "0.0.0.0", "--port", "43817"]
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${HEXIS_API_PORT:-43817}:43817"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:43817/health', timeout=3).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-hexis_memory}
+      POSTGRES_USER: ${POSTGRES_USER:-hexis_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hexis_password}
+      EMBEDDING_MODEL_ID: ${EMBEDDING_MODEL_ID:-unsloth/embeddinggemma-300m}
+      EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-768}
+      HEXIS_CORS_ORIGINS: ${HEXIS_CORS_ORIGINS:-http://localhost:3477,http://localhost:3000}
+      HEXIS_TTS_URL: ${HEXIS_TTS_URL:-http://host.docker.internal:42667}
+      RABBITMQ_MANAGEMENT_URL: http://rabbitmq:15672
+      RABBITMQ_USER: ${RABBITMQ_DEFAULT_USER:-hexis}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-hexis_password}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      HEXIS_LLM_CONSCIOUS_API_KEY: ${HEXIS_LLM_CONSCIOUS_API_KEY:-}
+      HEXIS_LLM_SUBCONSCIOUS_API_KEY: ${HEXIS_LLM_SUBCONSCIOUS_API_KEY:-}
+    volumes:
+      - ~/.hexis:/root/.hexis
+    networks:
+      - private
+      - public
+
+  channel_worker:
+    image: ghcr.io/quixiai/hexis-channels:${HEXIS_IMAGE_TAG:-latest}
+    container_name: hexis_channel_worker
+    restart: unless-stopped
+    command: ["hexis-channels"]
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-hexis_memory}
+      POSTGRES_USER: ${POSTGRES_USER:-hexis_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hexis_password}
+      EMBEDDING_MODEL_ID: ${EMBEDDING_MODEL_ID:-unsloth/embeddinggemma-300m}
+      EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-768}
+      RABBITMQ_MANAGEMENT_URL: http://rabbitmq:15672
+      RABBITMQ_USER: ${RABBITMQ_DEFAULT_USER:-hexis}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-hexis_password}
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN:-}
+      SLACK_APP_TOKEN: ${SLACK_APP_TOKEN:-}
+      SIGNAL_PHONE_NUMBER: ${SIGNAL_PHONE_NUMBER:-}
+      SIGNAL_API_URL: ${SIGNAL_API_URL:-http://signal-cli:8080}
+      WHATSAPP_ACCESS_TOKEN: ${WHATSAPP_ACCESS_TOKEN:-}
+      WHATSAPP_PHONE_NUMBER_ID: ${WHATSAPP_PHONE_NUMBER_ID:-}
+      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:-hexis_verify}
+      IMESSAGE_API_URL: ${IMESSAGE_API_URL:-}
+      IMESSAGE_PASSWORD: ${IMESSAGE_PASSWORD:-}
+      MATRIX_HOMESERVER: ${MATRIX_HOMESERVER:-}
+      MATRIX_ACCESS_TOKEN: ${MATRIX_ACCESS_TOKEN:-}
+      MATRIX_USER_ID: ${MATRIX_USER_ID:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      HEXIS_LLM_CONSCIOUS_API_KEY: ${HEXIS_LLM_CONSCIOUS_API_KEY:-}
+      HEXIS_LLM_SUBCONSCIOUS_API_KEY: ${HEXIS_LLM_SUBCONSCIOUS_API_KEY:-}
+    volumes:
+      - ~/.hexis:/root/.hexis
+    networks:
+      - private
+      - public
+
+  ui:
+    image: ghcr.io/quixiai/hexis-ui:${HEXIS_IMAGE_TAG:-latest}
+    container_name: hexis_ui
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    ports:
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${HEXIS_UI_PORT:-3477}:3477"
+    environment:
+      HEXIS_DATABASE_URL: postgresql://${POSTGRES_USER:-hexis_user}:${POSTGRES_PASSWORD:-hexis_password}@db:5432/${POSTGRES_DB:-hexis_memory}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hexis_user}:${POSTGRES_PASSWORD:-hexis_password}@db:5432/${POSTGRES_DB:-hexis_memory}
+      HEXIS_API_URL: http://api:43817
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      HEXIS_LLM_CONSCIOUS_API_KEY: ${HEXIS_LLM_CONSCIOUS_API_KEY:-}
+      HEXIS_LLM_SUBCONSCIOUS_API_KEY: ${HEXIS_LLM_SUBCONSCIOUS_API_KEY:-}
+    networks:
+      - private
+      - public
+
+  signal-cli:
+    image: bbernhard/signal-cli-rest-api:latest
+    container_name: hexis_signal_cli
+    profiles:
+      - signal
+    environment:
+      MODE: native
+    volumes:
+      - signal_data:/home/.local/share/signal-cli
+    expose:
+      - "8080"
+    networks:
+      - private
+
+  browser:
+    image: ghcr.io/browserless/chromium:latest
+    container_name: hexis_browser
+    profiles:
+      - browser
+    ports:
+      - "${HEXIS_BIND_ADDRESS:-127.0.0.1}:${BROWSER_CDP_PORT:-49222}:3000"
+    environment:
+      TIMEOUT: 60000
+      CONCURRENT: 5
+    networks:
+      - private
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+  signal_data:
+
+networks:
+  private:
+    internal: true
+  public:

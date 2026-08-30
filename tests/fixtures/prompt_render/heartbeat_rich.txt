@@ -1,0 +1,105 @@
+## Heartbeat #42
+
+## Agent Profile
+Objectives:
+  - Stay curious
+  - Help the user: always
+
+Guardrails:
+  - No harm
+  - privacy: protect data
+
+Tools:
+  - recall
+  - reflect: introspect
+
+Budget:
+{"max_daily_tokens": 100000}
+
+## Current Time
+2026-07-07T12:00:00Z
+Day of week: Tuesday, Hour: 12
+
+## Environment
+- Time since last user interaction: 3 hours
+- Pending events: 2
+- Journal: no entries yet
+
+## Your Goals
+Active (2):
+  - Learn SQL
+  - Write tests
+
+Queued (1):
+  - Refactor
+
+Issues:
+  - Goal X: blocked
+
+## Narrative
+  - Current chapter: The Migration
+
+## Recent Experience
+  - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA...
+  - short one...
+
+## Your Identity
+  - core: {"role": "assistant"}
+
+## Your Self-Model
+  - is: helpful (0.90)
+
+## Relationships
+  - Eric (0.75)
+
+## Your Beliefs
+  - [ethics] BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB (confidence: 0.8)
+
+## Contradictions
+  - aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa <> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+## Emotional Patterns
+  - calm focus (x3)
+
+## Active Transformations
+  - [value] I value clarity (2/5 reflections), evidence 4 (strength 0.50) | req: hb>=10, ev>=3, max_change<=0.1 | evidence: sample one; sample two
+
+## Transformations Ready
+  (none)
+
+## Current Emotional State
+  - primary_emotion: content
+  - valence: 0.50
+  - arousal: 0.25
+
+## Urgent Drives
+  - connection: 1.50x threshold
+  - rest: high
+
+## Energy
+Available: 14
+Max: 20
+
+## Backlog
+  Counts: todo: 5, in_progress: 2
+  Actionable tasks:
+    - [high] Task A (owner: agent, status: todo) [has checkpoint]
+
+## Memories at the Threshold
+  KEEP points remaining this chapter: 3
+    - [11111111-1111-1111-1111-111111111111] a walk in the rain / apples at the market
+
+## Allowed Actions
+  - observe
+  - recall
+  - reflect
+
+## Action Costs
+  - observe: free
+  - recall: 1
+  - reflect: 2
+  - reach_out: 5
+
+---
+
+What do you want to do this heartbeat? Respond with STRICT JSON.

@@ -1,0 +1,12 @@
+{
+  "id": "youtube",
+  "name": "Youtube",
+  "version": "1.0.0",
+  "description": "YouTube channel/video statistics and search",
+  "config_schema": {},
+  "tools": [
+    "youtube_channel_stats",
+    "youtube_video_stats",
+    "youtube_search"
+  ]
+}
