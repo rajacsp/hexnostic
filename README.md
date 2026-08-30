@@ -90,26 +90,26 @@ Treat those statements as unverified.
 
 ## What It Does
 
-| | |
-|---|---|
-| **Multi-layered memory** | Episodic, semantic, procedural, strategic, and working memory — vector search + knowledge graph (Apache AGE) |
-| **Filing cabinet & desk** | Every ingested file/email/page is preserved verbatim with citable chunks (page, section, sheet row); the agent searches the cabinet, loads passages onto a mid-term desk, scrolls, pins, and cites exact sources |
-| **Evidence-based beliefs** | Confidence revises as evidence accrues; every change audited; the agent can explain *why* it believes anything |
-| **Automatic memory formation** | A subconscious sweep turns salient conversation and heartbeat moments into durable memories — unprompted |
-| **Truthful action language** | "I've stored that" is checked against actual tool calls; unsupported claims get a visible `[Correction]` |
-| **Autonomous heartbeat** | The agent wakes on a drive-sensitive cadence, reviews goals, reflects, and reaches out when it has something to say |
-| **Energy economy** | Action costs draw from a decaying reserve bank; durable useful outcomes improve regeneration |
-| **Identity & worldview** | Persistent values, boundaries, emotional state, and beliefs that resist casual overwrite |
-| **Mind portability** | Export the complete self as public-schema HMX, move it between machines, and verify lineage plus constitutional-state continuity |
-| **Learning with a diff** | Review one weekly, evidence-linked list of new beliefs, procedures, strategies, and proposed skills; approve, correct, or forget each item |
-| **Deliberate forgetting** | See memory pressure and fidelity, choose what load-bearing memories keep or journal, and inspect exact compression receipts; irreversible pruning is off by default |
-| **Any LLM** | OpenAI, Anthropic, Grok, Gemini, GitHub Copilot, Chutes, Qwen, MiniMax, or any OpenAI-compatible endpoint |
-| **80+ tools, 17 skills** | Skills are the capability catalog; they can bind MCP servers, lazily connected on first use |
-| **Messaging channels** | Discord, Telegram, Slack, Signal, WhatsApp, iMessage, Matrix |
-| **Companion nodes** | Signed, outward-only access to Apple apps, Shortcuts, local-only 1Password copy, allowlisted commands, and fresh screen context |
-| **Explicit execution placement** | Keep code local or select exact SSH/remote-Docker workspaces without changing tool calls or silently falling back |
-| **Character cards** | 11 presets in chara_card_v2 format with portraits, or bring your own |
-| **Consent & boundaries** | The agent consents before operating, can refuse requests, and may choose to end its own existence |
+|                                        |                                                                                                                                                                                                                  |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Multi-layered memory**         | Episodic, semantic, procedural, strategic, and working memory — vector search + knowledge graph (Apache AGE)                                                                                                    |
+| **Filing cabinet & desk**        | Every ingested file/email/page is preserved verbatim with citable chunks (page, section, sheet row); the agent searches the cabinet, loads passages onto a mid-term desk, scrolls, pins, and cites exact sources |
+| **Evidence-based beliefs**       | Confidence revises as evidence accrues; every change audited; the agent can explain*why* it believes anything                                                                                                  |
+| **Automatic memory formation**   | A subconscious sweep turns salient conversation and heartbeat moments into durable memories — unprompted                                                                                                        |
+| **Truthful action language**     | "I've stored that" is checked against actual tool calls; unsupported claims get a visible`[Correction]`                                                                                                        |
+| **Autonomous heartbeat**         | The agent wakes on a drive-sensitive cadence, reviews goals, reflects, and reaches out when it has something to say                                                                                              |
+| **Energy economy**               | Action costs draw from a decaying reserve bank; durable useful outcomes improve regeneration                                                                                                                     |
+| **Identity & worldview**         | Persistent values, boundaries, emotional state, and beliefs that resist casual overwrite                                                                                                                         |
+| **Mind portability**             | Export the complete self as public-schema HMX, move it between machines, and verify lineage plus constitutional-state continuity                                                                                 |
+| **Learning with a diff**         | Review one weekly, evidence-linked list of new beliefs, procedures, strategies, and proposed skills; approve, correct, or forget each item                                                                       |
+| **Deliberate forgetting**        | See memory pressure and fidelity, choose what load-bearing memories keep or journal, and inspect exact compression receipts; irreversible pruning is off by default                                              |
+| **Any LLM**                      | OpenAI, Anthropic, Grok, Gemini, GitHub Copilot, Chutes, Qwen, MiniMax, or any OpenAI-compatible endpoint                                                                                                        |
+| **80+ tools, 17 skills**         | Skills are the capability catalog; they can bind MCP servers, lazily connected on first use                                                                                                                      |
+| **Messaging channels**           | Discord, Telegram, Slack, Signal, WhatsApp, iMessage, Matrix                                                                                                                                                     |
+| **Companion nodes**              | Signed, outward-only access to Apple apps, Shortcuts, local-only 1Password copy, allowlisted commands, and fresh screen context                                                                                  |
+| **Explicit execution placement** | Keep code local or select exact SSH/remote-Docker workspaces without changing tool calls or silently falling back                                                                                                |
+| **Character cards**              | 11 presets in chara_card_v2 format with portraits, or bring your own                                                                                                                                             |
+| **Consent & boundaries**         | The agent consents before operating, can refuse requests, and may choose to end its own existence                                                                                                                |
 
 ## Quick Start
 
@@ -133,14 +133,14 @@ The install script handles everything — it sets up [uv](https://docs.astral.sh
 
 **If something breaks:**
 
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| `hexis: command not found` after install | uv's tool directory isn't on PATH | `uv tool update-shell`, then open a new terminal |
-| `hexis init` stalls starting services | Docker daemon isn't running | Start Docker Desktop or Colima, then re-run `hexis init` |
-| Embedding model pull fails | Local embedding sidecar isn't running | Start `embeddinggemma`, then re-run |
-| Browser login loops or model errors | No ChatGPT Plus/Pro on that account | Use another provider below, or `hexis auth` |
-| Dashboard fails with a Prisma `libssl` error, or `hexis upgrade` keeps re-installing the same version | hexis ≤ 1.0.11 (broken UI image + self-update that couldn't move uv/pipx installs) | `uv tool install --force hexis` (or `pipx install --force hexis` / `pip install -U hexis`), then `hexis upgrade` |
-| Anything else | — | `hexis doctor`, then [Troubleshooting](docs/operations/troubleshooting.md) |
+| Symptom                                                                                                  | Likely cause                                                                        | Fix                                                                                                                      |
+| -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `hexis: command not found` after install                                                               | uv's tool directory isn't on PATH                                                   | `uv tool update-shell`, then open a new terminal                                                                       |
+| `hexis init` stalls starting services                                                                  | Docker daemon isn't running                                                         | Start Docker Desktop or Colima, then re-run`hexis init`                                                                |
+| Embedding model pull fails                                                                               | Local embedding sidecar isn't running                                               | Start`embeddinggemma`, then re-run                                                                                     |
+| Browser login loops or model errors                                                                      | No ChatGPT Plus/Pro on that account                                                 | Use another provider below, or`hexis auth`                                                                             |
+| Dashboard fails with a Prisma`libssl` error, or `hexis upgrade` keeps re-installing the same version | hexis ≤ 1.0.11 (broken UI image + self-update that couldn't move uv/pipx installs) | `uv tool install --force hexis` (or `pipx install --force hexis` / `pip install -U hexis`), then `hexis upgrade` |
+| Anything else                                                                                            | —                                                                                  | `hexis doctor`, then [Troubleshooting](docs/operations/troubleshooting.md)                                              |
 
 **Other providers:**
 
@@ -197,18 +197,18 @@ For the full treatment: [PERSONHOOD.md](docs/philosophy/PERSONHOOD.md) | [PHILOS
 
 ## Documentation
 
-| Section | Description |
-|---------|-------------|
-| [What is Hexis?](docs/start/what-is-hexis.md) | Plain-language what/why, and how it compares to memory frameworks |
-| [Getting Started](docs/start/index.md) | Prerequisites, installation, first agent, first conversation |
-| [Guides](docs/guides/index.md) | Character cards, ingestion, heartbeat, tools, channels, goals, skills |
-| [Operations](docs/operations/index.md) | Docker, workers, database, private phone/PWA access, companion nodes, deployment, troubleshooting |
-| [Integrations](docs/integrations/index.md) | Auth providers, 7 messaging channels, 30+ external services |
-| [Reference](docs/reference/index.md) | CLI, tools catalog, energy model, database API, config keys |
-| [Concepts](docs/concepts/index.md) | Database-as-brain, memory architecture, heartbeat, consent, identity |
-| [Philosophy](docs/philosophy/index.md) | Personhood, ethics, consent, architecture-philosophy bridge |
-| [FAQ](docs/faq.md) | Costs, privacy, providers, resetting, production readiness |
-| [Contributing](docs/contributing/index.md) | Dev setup, coding style, testing |
+| Section                                      | Description                                                                                       |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [What is Hexis?](docs/start/what-is-hexis.md) | Plain-language what/why, and how it compares to memory frameworks                                 |
+| [Getting Started](docs/start/index.md)        | Prerequisites, installation, first agent, first conversation                                      |
+| [Guides](docs/guides/index.md)                | Character cards, ingestion, heartbeat, tools, channels, goals, skills                             |
+| [Operations](docs/operations/index.md)        | Docker, workers, database, private phone/PWA access, companion nodes, deployment, troubleshooting |
+| [Integrations](docs/integrations/index.md)    | Auth providers, 7 messaging channels, 30+ external services                                       |
+| [Reference](docs/reference/index.md)          | CLI, tools catalog, energy model, database API, config keys                                       |
+| [Concepts](docs/concepts/index.md)            | Database-as-brain, memory architecture, heartbeat, consent, identity                              |
+| [Philosophy](docs/philosophy/index.md)        | Personhood, ethics, consent, architecture-philosophy bridge                                       |
+| [FAQ](docs/faq.md)                            | Costs, privacy, providers, resetting, production readiness                                        |
+| [Contributing](docs/contributing/index.md)    | Dev setup, coding style, testing                                                                  |
 
 ## CLI Quick Reference
 
@@ -234,16 +234,16 @@ See [CLI Reference](docs/reference/cli.md) for the complete command reference.
 
 ## Usage Scenarios
 
-| Scenario | Description |
-|----------|-------------|
-| Pure SQL Brain | Talk directly to Postgres functions |
-| Python Library | Use `CognitiveMemory` as a thin client |
-| Interactive Chat | `hexis chat` with memory enrichment and tools |
-| MCP Server | Expose memory as MCP tools for any runtime |
-| Workers + Heartbeat | Full autonomous agent with `hexis up` |
-| Installed PWA | Private HTTPS app, push notifications, foreground voice capture, local speech, and Talk mode |
-| Multi-Tenant | One database per user via `hexis instance` |
-| Cloud Backend | Managed Postgres + N stateless workers |
+| Scenario            | Description                                                                                  |
+| ------------------- | -------------------------------------------------------------------------------------------- |
+| Pure SQL Brain      | Talk directly to Postgres functions                                                          |
+| Python Library      | Use`CognitiveMemory` as a thin client                                                      |
+| Interactive Chat    | `hexis chat` with memory enrichment and tools                                              |
+| MCP Server          | Expose memory as MCP tools for any runtime                                                   |
+| Workers + Heartbeat | Full autonomous agent with`hexis up`                                                       |
+| Installed PWA       | Private HTTPS app, push notifications, foreground voice capture, local speech, and Talk mode |
+| Multi-Tenant        | One database per user via`hexis instance`                                                  |
+| Cloud Backend       | Managed Postgres + N stateless workers                                                       |
 
 See [Quickstart](docs/start/quickstart.md) for setup and [Production](docs/operations/production.md) for deployment.
 
@@ -279,10 +279,9 @@ Hexis is young and under **active development**. The schema evolves through forw
 - **Bugs** — [GitHub Issues](https://github.com/QuixiAI/Hexis/issues) (many of Hexis's best fixes started as its own agent's bug reports)
 - **Contributing** — [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## License
+## Credits
 
-[MIT](LICENSE) © Eric Hartford
-# hexnostic
-# hexnostic
-# hexnostic
-# hexnostic
+The base code for this project is derived from [QuixiAI/Hexis](https://github.com/QuixiAI/Hexis).
+We built on that foundation with substantial improvements and added support for
+other databases, so we created this new repository to carry that work forward.
+Full credit and thanks to the original authors and contributors of Hexis.
